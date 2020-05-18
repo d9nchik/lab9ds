@@ -54,8 +54,22 @@ def reduction_of_rows(matrix_of_path, di):
         for y in range(len(matrix_of_path)):
             matrix_of_path[x][y] -= di[x]
 
+
 def find_minimum_on_column(matrix_of_path):
-    pass
+    dj = []
+    for x in range(len(matrix_of_path)):
+        min_element = matrix_of_path[0][x]
+        for y in range(len(matrix_of_path)):
+            if matrix_of_path[y][x] < min_element:
+                min_element = matrix_of_path[y][x]
+        dj.append(min_element)
+    return dj
+
+
+def reduction_of_columns(matrix_of_path, dj):
+    for x in range(len(matrix_of_path)):
+        for y in range(len(matrix_of_path)):
+            matrix_of_path[y][x] -= dj[x]
 
 
 def solve_voyager_problem(matrix_of_path):
@@ -63,3 +77,5 @@ def solve_voyager_problem(matrix_of_path):
     while not is_path_done(result_matrix):
         di = find_minimum_on_rows(matrix_of_path)
         reduction_of_rows(matrix_of_path, di)
+        dj = find_minimum_on_column(matrix_of_path)
+        reduction_of_columns(matrix_of_path, dj)
