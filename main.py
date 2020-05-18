@@ -164,4 +164,4 @@ distanceMatrix = [[float('inf'), 5, 11, 9],
                   [7, 14, float('inf'), 8],
                   [12, 6, 15, float('inf')]]
 
-show_voyager_problem_solution(solve_voyager_problem(distanceMatrix))
+show_voyager_problem_solution(solve_voyager_problem(distance_matrix(get_data())))
