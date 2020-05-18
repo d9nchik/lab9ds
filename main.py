@@ -72,6 +72,35 @@ def reduction_of_columns(matrix_of_path, dj):
             matrix_of_path[y][x] -= dj[x]
 
 
+def find_null_dots(matrix_of_path):
+    array_of_null_dots = []
+    for x in range(len(matrix_of_path)):
+        for y in range(len(matrix_of_path)):
+            if matrix_of_path[x][y] == 0:
+                array_of_null_dots.append([x, y])
+    return array_of_null_dots
+
+
+def find_mark(matrix_of_path, point):
+    min_of_column = float('inf')
+    for x in range(len(matrix_of_path)):
+        if matrix_of_path[x][point[0]] < min_of_column:
+            min_of_column = matrix_of_path[x][point[0]]
+    return min(matrix_of_path[point[0]]) + min_of_column
+
+
+def find_maximum_null_dots(matrix_of_path):
+    array_of_null_dots = find_null_dots(matrix_of_path)
+    mark = find_mark(matrix_of_path, array_of_null_dots[0])
+    dot = array_of_null_dots[0]
+    for null_dot in array_of_null_dots:
+        temp_mark = find_mark(matrix_of_path, null_dot)
+        if temp_mark > mark:
+            mark = temp_mark
+            dot = null_dot
+    return dot
+
+
 def solve_voyager_problem(matrix_of_path):
     result_matrix = [-1] * len(matrix_of_path)
     while not is_path_done(result_matrix):
