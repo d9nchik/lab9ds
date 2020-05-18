@@ -32,8 +32,11 @@ def distance_matrix(e_data):
 
 
 def is_path_done(result_matrix):
+    counter = 0
     for result in result_matrix:
         if result == -1:
+            counter += 1
+        if counter == 2:
             return False
     return True
 
@@ -49,8 +52,11 @@ def find_minimum_on_rows(matrix_of_path):
     return di
 
 
-def reduction_of_rows(matrix_of_path, di):
+def reduction_of_rows(matrix_of_path):
+    di = find_minimum_on_rows(matrix_of_path)
     for x in range(len(matrix_of_path)):
+        if di[x] == float('inf'):
+            continue
         for y in range(len(matrix_of_path)):
             matrix_of_path[x][y] -= di[x]
 
@@ -66,8 +72,11 @@ def find_minimum_on_column(matrix_of_path):
     return dj
 
 
-def reduction_of_columns(matrix_of_path, dj):
+def reduction_of_columns(matrix_of_path):
+    dj = find_minimum_on_column(matrix_of_path)
     for x in range(len(matrix_of_path)):
+        if dj[x] == float('inf'):
+            continue
         for y in range(len(matrix_of_path)):
             matrix_of_path[y][x] -= dj[x]
 
@@ -84,9 +93,17 @@ def find_null_dots(matrix_of_path):
 def find_mark(matrix_of_path, point):
     min_of_column = float('inf')
     for x in range(len(matrix_of_path)):
-        if matrix_of_path[x][point[0]] < min_of_column:
-            min_of_column = matrix_of_path[x][point[0]]
-    return min(matrix_of_path[point[0]]) + min_of_column
+        if matrix_of_path[x][point[1]] == 0:
+            continue
+        if matrix_of_path[x][point[1]] < min_of_column:
+            min_of_column = matrix_of_path[x][point[1]]
+    min_of_row = float('inf')
+    for y in range(len(matrix_of_path)):
+        if matrix_of_path[point[0]][y] == 0:
+            continue
+        if matrix_of_path[point[0]][y] < min_of_row:
+            min_of_row = matrix_of_path[point[0]][y]
+    return min_of_column + min_of_row
 
 
 def find_maximum_null_dots(matrix_of_path):
@@ -101,10 +118,35 @@ def find_maximum_null_dots(matrix_of_path):
     return dot
 
 
+def block_row(matrix_of_path, row_index):
+    matrix_of_path[row_index] = [float('inf')] * len(matrix_of_path)
+
+
+def block_column(matrix_of_path, column_index):
+    for x in range(len(matrix_of_path)):
+        matrix_of_path[x][column_index] = float('inf')
+
+
+def reduction_of_matrix(matrix_of_path, result_matrix):
+    dot = find_maximum_null_dots(matrix_of_path)
+    result_matrix[dot[0]] = dot[1]
+    block_row(matrix_of_path, dot[0])
+    block_column(matrix_of_path, dot[1])
+    matrix_of_path[dot[1]][dot[0]] = float('inf')
+
+
 def solve_voyager_problem(matrix_of_path):
     result_matrix = [-1] * len(matrix_of_path)
     while not is_path_done(result_matrix):
-        di = find_minimum_on_rows(matrix_of_path)
-        reduction_of_rows(matrix_of_path, di)
-        dj = find_minimum_on_column(matrix_of_path)
-        reduction_of_columns(matrix_of_path, dj)
+        reduction_of_rows(matrix_of_path)
+        reduction_of_columns(matrix_of_path)
+        reduction_of_matrix(matrix_of_path, result_matrix)
+    return result_matrix
+
+
+distanceMatrix = [[float('inf'), 5, 11, 9],
+                  [10, float('inf'), 8, 7],
+                  [7, 14, float('inf'), 8],
+                  [12, 6, 15, float('inf')]]
+
+print(solve_voyager_problem(distanceMatrix))
