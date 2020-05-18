@@ -127,6 +127,15 @@ def block_column(matrix_of_path, column_index):
         matrix_of_path[x][column_index] = float('inf')
 
 
+def create_voyager_problem_solution(result_matrix):
+    index = result_matrix.index(-1)
+    voyager_problem_solution = [index, result_matrix.index(index)]
+    for x in range(len(result_matrix) - 2):
+        voyager_problem_solution.append(result_matrix.index(voyager_problem_solution[-1]))
+    voyager_problem_solution.append(voyager_problem_solution[0])
+    return reversed(voyager_problem_solution)
+
+
 def reduction_of_matrix(matrix_of_path, result_matrix):
     dot = find_maximum_null_dots(matrix_of_path)
     result_matrix[dot[0]] = dot[1]
@@ -141,7 +150,13 @@ def solve_voyager_problem(matrix_of_path):
         reduction_of_rows(matrix_of_path)
         reduction_of_columns(matrix_of_path)
         reduction_of_matrix(matrix_of_path, result_matrix)
-    return result_matrix
+    return create_voyager_problem_solution(result_matrix)
+
+
+def show_voyager_problem_solution(voyager_problem_solution):
+    print("Розв'язок задачі комівояжера: ")
+    for solution in voyager_problem_solution:
+        print(solution + 1, end="->")
 
 
 distanceMatrix = [[float('inf'), 5, 11, 9],
@@ -149,4 +164,4 @@ distanceMatrix = [[float('inf'), 5, 11, 9],
                   [7, 14, float('inf'), 8],
                   [12, 6, 15, float('inf')]]
 
-print(solve_voyager_problem(distanceMatrix))
+show_voyager_problem_solution(solve_voyager_problem(distanceMatrix))
